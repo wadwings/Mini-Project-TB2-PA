@@ -23,7 +23,7 @@ def compute_distance(df1, df2=None):
     return tr
 
 
-def test():
+def t():
     config.setConfig(config.speciesType.human, config.chainType.alpha)
     data = filtered_data()
     print(data.iloc[:200, :])
@@ -32,4 +32,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    t()
