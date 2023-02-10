@@ -1,10 +1,12 @@
-from setup import config
-from filter import filtered_data
+import pandas as pd
+
+from src.preprocess.setup import config
+from src.preprocess.feature_filter import load_data, compute_count
 from tcrdist.repertoire import TCRrep
 
 
 def compute_distance(df1, df2=None):
-    print("compute distance stage")
+    # print("compute distance stage")
     tr = TCRrep(cell_df=df1,
                 organism=config.getSpecies(),
                 chains=config.getChain(),
@@ -23,13 +25,21 @@ def compute_distance(df1, df2=None):
     return tr
 
 
-def t():
+def compute_single_distance(df1: pd.Series, df2: pd.Series):
+    df1 = df1.to_frame().T
+    df2 = df2.to_frame().T
+    tr = compute_distance(df1, df2)
+    return tr.rw_alpha[0][0]
+
+
+def example():
     config.setConfig(config.speciesType.human, config.chainType.alpha)
-    data = filtered_data()
+    data = load_data()
+    data = compute_count(data, config.getColumns())
     print(data.iloc[:200, :])
     tr = compute_distance(df1=data.iloc[:200, :], df2=data)
     print(tr.rw_alpha)
 
 
 if __name__ == "__main__":
-    t()
+    example()
