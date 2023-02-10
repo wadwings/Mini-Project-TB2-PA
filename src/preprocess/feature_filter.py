@@ -1,4 +1,4 @@
-from src.filter.setup import config
+from src.preprocess.setup import config
 import pandas as pd
 
 df = pd.read_table('../../data/vdjdb_full.tsv').rename(
