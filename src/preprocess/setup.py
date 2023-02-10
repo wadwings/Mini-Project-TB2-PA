@@ -9,6 +9,11 @@ class Config:
         beta = 'beta'
         pw_ab = 'pw_ab'
 
+    class labelType:
+
+        beta = 'beta'
+        pw_ab = 'pw_ab'
+
     chainsList = {
         chainType.alpha: ['alpha'],
         chainType.beta: ['beta'],
@@ -29,6 +34,7 @@ class Config:
 
     species: speciesType.human
     chain: chainType.alpha
+    label: labelType.None
 
     def setConfig(self, species, chain):
         self.species = species
