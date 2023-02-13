@@ -9,6 +9,29 @@ class Config:
         beta = 'beta'
         pw_ab = 'pw_ab'
 
+    class labelType:
+        mhc_a = 'mhc.a'
+        mhc_b = 'mhc.b'
+        mhc_class = 'mhc.class'
+        mhc = 'mhc'
+        epitope = 'antigen.epitope'
+        gene = 'antigen.gene'
+        species = 'antigen.species'
+        antigen = 'antigen'
+        mhc_antigen = 'mhc_antigen'
+
+    labelColumns = {
+        labelType.mhc_a: ['mhc.a'],
+        labelType.mhc_b: ['mhc.b'],
+        labelType.mhc_class: ['mhc.class'],
+        labelType.mhc: ['mhc.a', 'mhc.b', 'mhc.class'],
+        labelType.epitope: ['antigen.epitope'],
+        labelType.gene: ['antigen.gene'],
+        labelType.species: ['antigen.species'],
+        labelType.antigen: ['antigen.epitope', 'antigen.gene', 'antigen.species'],
+        labelType.mhc_antigen: ['mhc.a', 'mhc.b', 'mhc.class', 'antigen.epitope', 'antigen.gene', 'antigen.species'],
+    }
+
     chainsList = {
         chainType.alpha: ['alpha'],
         chainType.beta: ['beta'],
@@ -29,6 +52,7 @@ class Config:
 
     species: speciesType.human
     chain: chainType.alpha
+    label: labelType.mhc
 
     def setConfig(self, species, chain):
         self.species = species
@@ -39,6 +63,12 @@ class Config:
 
     def setSpecies(self, species):
         self.species = species
+
+    def setLabel(self, label):
+        self.label = label
+
+    def getLabelColumns(self):
+        return self.labelColumns[self.label]
 
     def getSpecies(self):
         return self.speciesString[self.species]
