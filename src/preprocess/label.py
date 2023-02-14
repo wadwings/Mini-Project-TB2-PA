@@ -29,5 +29,5 @@ def generate_label(data: pd.DataFrame, labelType: config.labelType):
 if __name__ == '__main__' :
     config.setConfig(config.speciesType.human, config.chainType.alpha)
     data = load_data()
-    generate_label(data, config.labelType.mhc)
+    generate_label(data, config.labelType.mhc_a)
     print(data['label'].unique())
