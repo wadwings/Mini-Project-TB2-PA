@@ -50,36 +50,50 @@ class Config:
         chainType.pw_ab: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene', "j_b_gene"],
     }
 
+    gene_columns = {
+        chainType.alpha: ['cdr3_a_aa'],
+        chainType.beta: ['cdr3_b_aa'],
+        chainType.pw_ab: ['cdr3_a_aa', 'cdr3_b_aa'],
+    }
+
     species: speciesType.human
     chain: chainType.alpha
     label: labelType.mhc
 
-    def setConfig(self, species, chain):
+    def __init__(self, species=speciesType.human, chain=chainType.alpha, label=labelType.mhc):
         self.species = species
         self.chain = chain
-
-    def setChain(self, chain):
-        self.chain = chain
-
-    def setSpecies(self, species):
-        self.species = species
-
-    def setLabel(self, label):
         self.label = label
 
-    def getLabelColumns(self):
+    def set_config(self, species, chain):
+        self.species = species
+        self.chain = chain
+
+    def set_chain(self, chain):
+        self.chain = chain
+
+    def set_species(self, species):
+        self.species = species
+
+    def set_label(self, label):
+        self.label = label
+
+    def get_label_columns(self):
         return self.labelColumns[self.label]
 
-    def getSpecies(self):
+    def get_species(self):
         return self.speciesString[self.species]
 
-    def getChain(self):
+    def get_chain(self):
         return self.chainsList[self.chain]
 
-    def getColumns(self):
+    def get_columns(self):
         return self.columns[self.chain]
 
-    def getSpeciesName(self):
+    def get_gene_columns(self):
+        return self.gene_columns[self.chain]
+
+    def get_species_name(self):
         return self.species
 
 

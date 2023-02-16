@@ -1,5 +1,6 @@
 from src.preprocess.setup import config
 import pandas as pd
+import numpy as np
 
 df = pd.read_table('../../data/vdjdb_full.tsv').rename(
     columns={'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
@@ -7,10 +8,32 @@ df = pd.read_table('../../data/vdjdb_full.tsv').rename(
 
 
 def load_data():
+    """
+    fetch data from vdjDB and filter them based pre-defined config.
+    config.setConfig must be called before load data.
+    """
     print("fetching data stage")
-    filtered_df = df.loc[lambda df: df["species"] == config.getSpeciesName()].dropna(subset=config.getColumns())
+    filtered_df = df.loc[lambda df: df["species"] == config.get_species_name()] \
+        .dropna(subset=config.get_columns()).reindex(copy=True)
     return pd.DataFrame(filtered_df)
+
+
+def compute_similarity(df):
+    """
+    compute alpha, beta or pair-wise alpha&beta into cumulative_sum to extract feature from features.
+    """
+    columns = config.get_gene_columns()
+    for column in columns:
+        df[column] = df[column].map(lambda x: sum([int(c, 36) - int('A', 36) for c in x]))
+    return df
 
 
 def compute_count(df, columns):
     return pd.DataFrame(df.groupby(columns).size().reset_index().rename(columns={0: 'count'}))
+
+
+if __name__ == '__main__':
+    config.set_config(config.speciesType.human, config.chainType.pw_ab)
+    data = load_data()
+    data = compute_similarity(data)
+    print(data[config.get_gene_columns()])
