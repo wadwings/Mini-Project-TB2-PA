@@ -32,6 +32,7 @@ def compute_single_distance(df1: pd.Series, df2: pd.Series):
     return tr
 
 
+
 def example():
     config.set_config(config.speciesType.human, config.chainType.alpha)
     data = load_data()
