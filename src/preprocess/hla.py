@@ -6,8 +6,6 @@ def generate_hla_table(file_path='./file.tsv', save_path='./hla.table'):
     df = df.drop_duplicates()
     df = df.reset_index()
     df = df.drop(columns='index')
-    for i in range(len(df['meta.subject.id'])):
-        df['meta.subject.id'][i] = df['meta.subject.id'][i] if not pd.isnull(df['meta.subject.id'][i]) else f'PID{i}'
     df['mhc.b'] = df['mhc.b'].str.replace(r'HLA-|\*', '', regex=True)
     df['meta.donor.MHC'] = df['meta.donor.MHC'].str.replace(r'HLA-|\*', '', regex=True)
     df['mhc.b'] = df['mhc.b'].replace('B2M','')

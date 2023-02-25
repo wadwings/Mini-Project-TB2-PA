@@ -17,8 +17,14 @@ def load_data(src='../../data/vdjdb_full.tsv'):
         columns=config.get_columns_mapping())
     filtered_df = df.loc[lambda df: df["species"] == config.get_species_name()] \
         .dropna(subset=config.get_columns()).reindex(copy=True)
+    filtered_df = filtered_df.reset_index()
     return pd.DataFrame(filtered_df)
 
+
+def generate_pid(df):
+    for i in range(len(df['meta.subject.id'])):
+        df['meta.subject.id'][i] = df['meta.subject.id'][i] if not pd.isnull(df['meta.subject.id'][i]) else f'PID{i}'
+    return df
 
 def compute_similarity(df):
     """
