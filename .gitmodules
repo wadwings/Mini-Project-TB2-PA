@@ -1,3 +1,0 @@
-[submodule "src/distance_compute/giana"]
-	path = src/distance_compute/giana
-	url = https://github.com/s175573/GIANA
