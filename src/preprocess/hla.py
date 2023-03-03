@@ -7,6 +7,7 @@ def generate_hla_table(file_path='./file.tsv', save_path='./hla.table'):
     df = df.reset_index()
     df = df.drop(columns='index')
     df['mhc.b'] = df['mhc.b'].str.replace(r'HLA-|\*', '', regex=True)
+    df['mhc.a'] = df['mhc.a'].str.replace(r'HLA-|\*', '', regex=True)
     df['meta.donor.MHC'] = df['meta.donor.MHC'].str.replace(r'HLA-|\*', '', regex=True)
     df['mhc.b'] = df['mhc.b'].replace('B2M','')
     df['meta.subject.id'] = df['meta.subject.id'].astype(str)

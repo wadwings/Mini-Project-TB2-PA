@@ -55,7 +55,8 @@ class Config:
         methodType.tcrdist: {'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
              'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'},
         methodType.gliph: {'cdr3.alpha': 'CDR3a', "v.alpha": "TRAV", "j.alpha": "TRAJ",
-             'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'}
+             'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'},
+        methodType.giana: {'cdr3.beta': 'aminoAcid', 'v.beta': 'vMaxResolved'},
     }
 
     columns = {
@@ -64,7 +65,10 @@ class Config:
         chainType.pw_ab + methodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene', "j_b_gene"],
         chainType.alpha + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ'],
         chainType.beta + methodType.gliph: ['CDR3b', 'TRBV', 'TRBJ'],
-        chainType.pw_ab + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ', 'CDR3a', 'TRAV', 'TRAJ'],
+        chainType.pw_ab + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ', 'CDR3b', 'TRBV', 'TRBJ'],
+        chainType.alpha + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.beta + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.pw_ab + methodType.giana: ['aminoAcid', 'vMaxResolved'],
     }
 
     gene_columns = {
@@ -99,6 +103,8 @@ class Config:
 
     def set_method(self, method):
         self.method = method
+        if (method == self.methodType.giana or method == self.methodType.gliph) and self.chain != self.chainType.beta:
+            print(f"{method} cannot be used within self.chain = {self.chain}")
 
     def get_label_columns(self):
         return self.labelColumns[self.label]
