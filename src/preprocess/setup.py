@@ -20,6 +20,13 @@ class Config:
         antigen = 'antigen'
         mhc_antigen = 'mhc_antigen'
 
+    class methodType:
+        tcrdist = 'tcrdist'
+        gliph = 'gliph'
+        giana = 'giana'
+
+
+
     labelColumns = {
         labelType.mhc_a: ['mhc.a'],
         labelType.mhc_b: ['mhc.b'],
@@ -44,43 +51,86 @@ class Config:
         speciesType.monkey: 'monkey'
     }
 
+    mapping_columns = {
+        methodType.tcrdist: {'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
+             'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'},
+        methodType.gliph: {'cdr3.alpha': 'CDR3a', "v.alpha": "TRAV", "j.alpha": "TRAJ",
+             'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'},
+        methodType.giana: {'cdr3.beta': 'aminoAcid', 'v.beta': 'vMaxResolved'},
+    }
+
     columns = {
-        chainType.alpha: ['cdr3_a_aa', 'v_a_gene', "j_a_gene"],
-        chainType.beta: ['cdr3_b_aa', 'v_b_gene', "j_b_gene"],
-        chainType.pw_ab: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene', "j_b_gene"],
+        chainType.alpha + methodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene"],
+        chainType.beta + methodType.tcrdist: ['cdr3_b_aa', 'v_b_gene', "j_b_gene"],
+        chainType.pw_ab + methodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene', "j_b_gene"],
+        chainType.alpha + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ'],
+        chainType.beta + methodType.gliph: ['CDR3b', 'TRBV', 'TRBJ'],
+        chainType.pw_ab + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ', 'CDR3b', 'TRBV', 'TRBJ'],
+        chainType.alpha + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.beta + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.pw_ab + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+    }
+
+    gene_columns = {
+        chainType.alpha: ['cdr3_a_aa'],
+        chainType.beta: ['cdr3_b_aa'],
+        chainType.pw_ab: ['cdr3_a_aa', 'cdr3_b_aa'],
     }
 
     species: speciesType.human
     chain: chainType.alpha
     label: labelType.mhc
+    method: methodType.tcrdist
 
-    def setConfig(self, species, chain):
+    def __init__(self, species=speciesType.human, chain=chainType.alpha, label=labelType.mhc, method=methodType.tcrdist):
+        self.species = species
+        self.chain = chain
+        self.label = label
+        self.method = method
+
+    def set_config(self, species, chain):
         self.species = species
         self.chain = chain
 
-    def setChain(self, chain):
+    def set_chain(self, chain):
         self.chain = chain
 
-    def setSpecies(self, species):
+    def set_species(self, species):
         self.species = species
 
-    def setLabel(self, label):
+    def set_label(self, label):
         self.label = label
 
-    def getLabelColumns(self):
+    def set_method(self, method):
+        self.method = method
+        if (method == self.methodType.giana or method == self.methodType.gliph) and self.chain != self.chainType.beta:
+            print(f"{method} cannot be used within self.chain = {self.chain}")
+
+    def get_label_columns(self):
         return self.labelColumns[self.label]
 
-    def getSpecies(self):
+    def get_species(self):
         return self.speciesString[self.species]
 
-    def getChain(self):
+    def get_chain(self):
         return self.chainsList[self.chain]
 
-    def getColumns(self):
-        return self.columns[self.chain]
+    def get_method(self):
+        return self.method
 
-    def getSpeciesName(self):
+    def get_columns(self):
+        return self.columns[self.chain + self.method]
+
+    def get_columns_mapping(self):
+        return self.mapping_columns[self.method]
+
+    def get_gene_columns(self):
+        return self.gene_columns[self.chain]
+
+    def get_species_name(self):
         return self.species
+
+
 
 
 config = Config()

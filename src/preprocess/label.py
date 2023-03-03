@@ -6,8 +6,8 @@ from src.preprocess.feature_filter import load_data
 
 def generate_label(data: pd.DataFrame, labelType: config.labelType):
     print("generating label")
-    config.setLabel(labelType)
-    columns = config.getLabelColumns()
+    config.set_label(labelType)
+    columns = config.get_label_columns()
     index_map = {}
     index = 0
     labelstr = lambda x: '.'.join(x.to_frame().T[columns].to_numpy()[0])
@@ -27,7 +27,7 @@ def generate_label(data: pd.DataFrame, labelType: config.labelType):
 
 
 if __name__ == '__main__' :
-    config.setConfig(config.speciesType.human, config.chainType.alpha)
+    config.set_config(config.speciesType.human, config.chainType.alpha)
     data = load_data()
     generate_label(data, config.labelType.mhc_a)
     print(data['label'].unique())
