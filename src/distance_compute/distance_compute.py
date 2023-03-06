@@ -9,6 +9,7 @@ from src.preprocess.feature_filter import load_data, compute_count, tcr_drop
 from tcrdist.repertoire import TCRrep
 from src.distance_compute.giana.GIANA4 import giana
 from numpy.linalg import norm
+from src.preprocess.feature_filter import cdr3_3_split
 
 def tcrdist_method(df1, df2):
     tr = TCRrep(cell_df=df1,
@@ -34,8 +35,33 @@ def tcrdist_method(df1, df2):
         return tr.rw_alpha, tr.rw_beta,
 
 
-def gliph_method(df1, df2=None):
-    return None
+def gliph_method(df1, df2):
+    def levenshtein_distance(c1, c2):
+        rows = len(c1) + 1
+        cols = len(c2) + 1
+        distance = [[0 for col in range(cols)] for row in range(rows)]
+
+        for row in range(1, rows):
+            distance[row][0] = row
+        for col in range(1, cols):
+            distance[0][col] = col
+        for col in range(1, cols):
+            for row in range(1, rows):
+                if c1[row - 1] == c2[col - 1]:
+                    cost = 0
+                else:
+                    cost = 1
+                distance[row][col] = min(distance[row - 1][col] + 1,
+                                         distance[row][col - 1] + 1,
+                                         distance[row - 1][col - 1] + cost)
+        return distance[rows - 1][cols - 1]
+
+    elements = list(df1)
+    distance_result = [[levenshtein_distance(c1, c2) for c2 in elements] for c1 in elements]
+    distance_matrix = pd.DataFrame(distance_result, columns=elements, index=elements)
+    return distance_matrix
+
+
 
 
 def giana_method(df1, df2):
@@ -93,8 +119,26 @@ def tcr_test():
 
 
 def gliph_test():
-    # TODO
-    return
+    config.set_method(config.methodType.gliph)
+    config.set_config(config.speciesType.human, config.chainType.alpha)
+    data_alpha = load_data().iloc[:200, :]
+    data_alpha = data_alpha.drop('index', axis=1)
+    data_alpha = tcr_drop(data_alpha, 8)
+    data_alpha = data_alpha.reset_index(drop=True)
+    data_alpha = data_alpha['CDR3a']
+    data_alpha = cdr3_3_split(data_alpha)
+    print(data_alpha)
+
+    config.set_config(config.speciesType.human, config.chainType.beta)
+    data_beta = load_data().iloc[:200, :]
+    data_beta = data_beta.drop('index', axis=1)
+    data_beta = data_beta.reindex(columns=['CDR3b'] + [col for col in data_beta.columns if col != 'CDR3b'])
+    data_beta = tcr_drop(data_beta, 8)
+    data_beta = data_beta.reset_index(drop=True)
+    data_beta = data_beta['CDR3b']
+    data_beta = cdr3_3_split(data_beta)
+    distance_matrix = compute_distance(data_beta)
+    print(distance_matrix)
 
 
 def giana_test():
@@ -113,4 +157,4 @@ def giana_test():
 
 
 if __name__ == "__main__":
-    giana_test()
+    gliph_test()

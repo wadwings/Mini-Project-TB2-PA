@@ -49,6 +49,19 @@ def tcr_drop(df, limit_len=8):
     return df.drop(df[df[config.get_columns()[0]].map(len) < limit_len].index)
 
 
+switch_cdr3 = 1
+def cdr3_3_split(df):
+
+    if switch_cdr3 == 0:
+        return df
+    else:
+        df1 = df.str[3:-3]
+        df1 = df1.drop_duplicates()
+        return df1
+
+
+
+
 if __name__ == '__main__':
     config.set_config(config.speciesType.human, config.chainType.pw_ab)
     data = load_data()

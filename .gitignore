@@ -2,6 +2,7 @@ test
 venv
 .idea
 __pycache__
-*.DS_Store
+.DS_Store
+*.fasta
 *.ipynb_checkpoints
 *.ipynb
