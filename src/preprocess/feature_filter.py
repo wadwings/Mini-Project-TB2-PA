@@ -49,22 +49,17 @@ def tcr_drop(df, limit_len=8):
     return df.drop(df[df[config.get_columns()[0]].map(len) < limit_len].index)
 
 
-def gliph_p_file(file_path='./file.tsv', save_path='./gliph_p_file.tsv'):
-    df = pd.read_table(file_path).loc[:, ['CDR3b', 'TRBV', 'TRBJ','CDR3a','TRAV','TRAJ','meta.subject.id']]
-    df['TRBV'] = df['TRBV'].str.replace(r'\*01', '', regex=True)
-    df = df[~df['TRBV'].str.contains('\*')]
-    df['TRBJ'] = df['TRBJ'].str.replace(r'\*01', '', regex=True)
-    df['TRAV'] = df['TRAV'].str.replace(r'\*01', '', regex=True)
-    df['TRAJ'] = df['TRAJ'].str.replace(r'\*01', '', regex=True)
-    df = df.rename(columns={'meta.subject.id': 'Patient'})
-    df['Patient'] = df['Patient'].str.replace(' ', '')
-    df_count = df.groupby(df.columns.tolist()).size().reset_index().rename(columns={0: 'Counts'})
-    df = df.drop_duplicates().merge(df_count, on=df.columns.tolist(), how='left')
-    df['Counts'] = df['Counts'].fillna(1)
-    # df = df.fillna('')
-    df['Counts'] = df['Counts'].astype(int)
+switch_cdr3 = 1
+def cdr3_3_split(df):
 
-    df.to_csv(save_path, sep='\t', index=False)
+    if switch_cdr3 == 0:
+        return df
+    else:
+        df1 = df.str[3:-3]
+        df1 = df1.drop_duplicates()
+        return df1
+
+
 
 
 if __name__ == '__main__':
@@ -72,5 +67,3 @@ if __name__ == '__main__':
     data = load_data()
     data = compute_similarity(data)
     print(data[config.get_gene_columns()])
-    gliph_p_file('./file.tsv')
-
