@@ -57,9 +57,9 @@ def gliph_method(df1, df2):
         return distance[rows - 1][cols - 1]
 
     elements = list(df1)
-    distance_matrix = [[levenshtein_distance(c1, c2) for c2 in elements] for c1 in elements]
-    df_result = pd.DataFrame(distance_matrix, columns=elements, index=elements)
-    return df_result
+    distance_result = [[levenshtein_distance(c1, c2) for c2 in elements] for c1 in elements]
+    distance_matrix = pd.DataFrame(distance_result, columns=elements, index=elements)
+    return distance_matrix
 
 
 
