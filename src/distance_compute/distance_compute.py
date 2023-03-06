@@ -36,38 +36,28 @@ def tcrdist_method(df1, df2):
 
 
 def gliph_method(df1, df2):
-    def levenshtein_distance(s1, s2):
-        # Initialize matrix with zeros
-        rows = len(s1) + 1
-        cols = len(s2) + 1
+    def levenshtein_distance(c1, c2):
+        rows = len(c1) + 1
+        cols = len(c2) + 1
         distance = [[0 for col in range(cols)] for row in range(rows)]
 
-        # Populate matrix with initial values
         for row in range(1, rows):
             distance[row][0] = row
         for col in range(1, cols):
             distance[0][col] = col
-
-        # Calculate edit distance
         for col in range(1, cols):
             for row in range(1, rows):
-                if s1[row - 1] == s2[col - 1]:
+                if c1[row - 1] == c2[col - 1]:
                     cost = 0
                 else:
                     cost = 1
-                distance[row][col] = min(distance[row - 1][col] + 1,  # deletion
-                                         distance[row][col - 1] + 1,  # insertion
-                                         distance[row - 1][col - 1] + cost)  # substitution
-
+                distance[row][col] = min(distance[row - 1][col] + 1,
+                                         distance[row][col - 1] + 1,
+                                         distance[row - 1][col - 1] + cost)
         return distance[rows - 1][cols - 1]
 
-    # Get the elements from the input dataframes
     elements = list(df1)
-
-    # Compute the distance matrix using the elements
-    distance_matrix = [[levenshtein_distance(s1, s2) for s2 in elements] for s1 in elements]
-
-    # Convert the matrix to a pandas dataframe with row and column labels
+    distance_matrix = [[levenshtein_distance(c1, c2) for c2 in elements] for c1 in elements]
     df_result = pd.DataFrame(distance_matrix, columns=elements, index=elements)
     return df_result
 
@@ -149,9 +139,6 @@ def gliph_test():
     data_beta = cdr3_3_split(data_beta)
     distance_matrix = compute_distance(data_beta)
     print(distance_matrix)
-
-
-
 
 
 def giana_test():
