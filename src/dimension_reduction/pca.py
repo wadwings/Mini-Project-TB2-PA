@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 import umap
 from sklearn.preprocessing import StandardScaler
-import plotly.express as px
 from sklearn.manifold import MDS
 
 # def pca_decomposition(data):
@@ -21,7 +20,7 @@ def switch_standard_data(feature):
         return feature
 
 
-def pca_plot(feature,target):
+def pca_plot(feature,target,name='PCA'):
     feature = switch_standard_data(feature)
 
     pca = PCA(n_components=2,random_state=42)
@@ -34,7 +33,7 @@ def pca_plot(feature,target):
     plt.ylabel('PCA Component 2')
     plt.colorbar()
 
-    plt.title('PCA')
+    plt.title(name)
     plt.show()
 def pca_plot1(feature,target):
     feature = switch_standard_data(feature)

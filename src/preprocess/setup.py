@@ -1,5 +1,6 @@
 import copy
 
+
 class Config:
     class speciesType:
         human = 'HomoSapiens'
@@ -23,11 +24,17 @@ class Config:
         antigen = 'antigen'
         mhc_antigen = 'mhc_antigen'
 
-    class methodType:
+    class distanceMethodType:
         tcrdist = 'tcrdist'
         gliph = 'gliph'
         giana = 'giana'
 
+    class clusterMethodType:
+        KMeans = 'kmeans'
+
+    # dimension_reduction_method_type
+    class drMethodType:
+        pca = 'pca'
 
     labelColumns = {
         labelType.none: [],
@@ -55,24 +62,24 @@ class Config:
     }
 
     mapping_columns = {
-        methodType.tcrdist: {'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
-                             'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'},
-        methodType.gliph: {'cdr3.alpha': 'CDR3a', "v.alpha": "TRAV", "j.alpha": "TRAJ",
-                           'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'},
-        methodType.giana: {'cdr3.beta': 'aminoAcid', 'v.beta': 'vMaxResolved'},
+        distanceMethodType.tcrdist: {'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
+                                     'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'},
+        distanceMethodType.gliph: {'cdr3.alpha': 'CDR3a', "v.alpha": "TRAV", "j.alpha": "TRAJ",
+                                   'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'},
+        distanceMethodType.giana: {'cdr3.beta': 'aminoAcid', 'v.beta': 'vMaxResolved'},
     }
 
     columns = {
-        chainType.alpha + methodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene"],
-        chainType.beta + methodType.tcrdist: ['cdr3_b_aa', 'v_b_gene', "j_b_gene"],
-        chainType.pw_ab + methodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene',
-                                               "j_b_gene"],
-        chainType.alpha + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ'],
-        chainType.beta + methodType.gliph: ['CDR3b', 'TRBV', 'TRBJ'],
-        chainType.pw_ab + methodType.gliph: ['CDR3a', 'TRAV', 'TRAJ', 'CDR3b', 'TRBV', 'TRBJ'],
-        chainType.alpha + methodType.giana: ['aminoAcid', 'vMaxResolved'],
-        chainType.beta + methodType.giana: ['aminoAcid', 'vMaxResolved'],
-        chainType.pw_ab + methodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.alpha + distanceMethodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene"],
+        chainType.beta + distanceMethodType.tcrdist: ['cdr3_b_aa', 'v_b_gene', "j_b_gene"],
+        chainType.pw_ab + distanceMethodType.tcrdist: ['cdr3_a_aa', 'v_a_gene', "j_a_gene", 'cdr3_b_aa', 'v_b_gene',
+                                                       "j_b_gene"],
+        chainType.alpha + distanceMethodType.gliph: ['CDR3a', 'TRAV', 'TRAJ'],
+        chainType.beta + distanceMethodType.gliph: ['CDR3b', 'TRBV', 'TRBJ'],
+        chainType.pw_ab + distanceMethodType.gliph: ['CDR3a', 'TRAV', 'TRAJ', 'CDR3b', 'TRBV', 'TRBJ'],
+        chainType.alpha + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.beta + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.pw_ab + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
     }
 
     gene_columns = {
@@ -84,14 +91,19 @@ class Config:
     species: speciesType.human
     chain: chainType.alpha
     label: labelType.none
-    method: methodType.tcrdist
+    distance_method: distanceMethodType.tcrdist
+    cluster_method: clusterMethodType.KMeans
+    dr_method: drMethodType.pca
 
     def __init__(self, species=speciesType.human, chain=chainType.alpha, label=labelType.none,
-                 method=methodType.tcrdist):
+                 distance_method=distanceMethodType.tcrdist, cluster_method=clusterMethodType.KMeans,
+                 dr_method=drMethodType.pca):
         self.species = species
         self.chain = chain
         self.label = label
-        self.method = method
+        self.distance_method = distance_method
+        self.cluster_method = cluster_method
+        self.dr_method = dr_method
 
     def set_config(self, species, chain):
         self.species = species
@@ -106,10 +118,19 @@ class Config:
     def set_label(self, label):
         self.label = label
 
-    def set_method(self, method):
-        self.method = method
-        if (method == self.methodType.giana or method == self.methodType.gliph) and self.chain != self.chainType.beta:
+    def set_distance_method(self, method):
+        self.distance_method = method
+        # giana and gliph can only be used with beta chain
+        if (
+                method == self.distanceMethodType.giana or
+                method == self.distanceMethodType.gliph) and self.chain != self.chainType.beta:
             print(f"{method} cannot be used within self.chain = {self.chain}")
+
+    def set_dr_method(self, method):
+        self.dr_method = method
+
+    def set_clustering_method(self, method):
+        self.cluster_method = method
 
     def get_label_columns(self):
         return copy.deepcopy(self.labelColumns[self.label])
@@ -120,20 +141,28 @@ class Config:
     def get_chain(self):
         return copy.deepcopy(self.chainsList[self.chain])
 
-    def get_method(self):
-        return copy.deepcopy(self.method)
+    def get_distance_method(self):
+        return copy.deepcopy(self.distance_method)
 
     def get_columns(self):
-        return copy.deepcopy(self.columns[self.chain + self.method])
+        return copy.deepcopy(self.columns[self.chain + self.distance_method])
 
     def get_columns_mapping(self):
-        return copy.deepcopy(self.mapping_columns[self.method])
+        return copy.deepcopy(self.mapping_columns[self.distance_method])
 
     def get_gene_columns(self):
         return copy.deepcopy(self.gene_columns[self.chain])
 
     def get_species_name(self):
         return copy.deepcopy(self.species)
+
+    def clear(self):
+        self.species = self.speciesType.human
+        self.chain = self.chainType.alpha
+        self.label = self.labelType.none
+        self.distance_method = self.distanceMethodType.tcrdist
+        self.cluster_method = self.clusterMethodType.KMeans
+        self.dr_method = self.drMethodType.pca
 
 
 config = Config()

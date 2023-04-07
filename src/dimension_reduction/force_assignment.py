@@ -22,21 +22,19 @@ def replace_string_with_sum(data, column):
 
     return data
 
-
-
-
-config.set_config(config.speciesType.human, config.chainType.alpha)
-data = load_data('../../data/vdjdb_full.tsv')
-print(data)
-generate_label(data, config.labelType.mhc_class)
-
-data = data[['cdr3_a_aa', 'v_a_gene', 'j_a_gene', 'label']]
-print(data)
-data = replace_string_with_sum(data, 'cdr3_a_aa')
-data = replace_string_with_sum(data, 'v_a_gene')
-data = replace_string_with_sum(data, 'j_a_gene')
-print(data)
-
-ncols = data.shape[1]
-feature = data.values[:,0:ncols-1]
-target = data.values[:,ncols-1]
+#
+# config.set_config(config.speciesType.human, config.chainType.alpha)
+# data = load_data('../../data/vdjdb_full.tsv')
+# print(data)
+# generate_label(data, config.labelType.mhc_class)
+#
+# data = data[['cdr3_a_aa', 'v_a_gene', 'j_a_gene', 'label']]
+# print(data)
+# data = replace_string_with_sum(data, 'cdr3_a_aa')
+# data = replace_string_with_sum(data, 'v_a_gene')
+# data = replace_string_with_sum(data, 'j_a_gene')
+# print(data)
+#
+# ncols = data.shape[1]
+# feature = data.values[:,0:ncols-1]
+# target = data.values[:,ncols-1]
