@@ -89,9 +89,9 @@ def giana_method(df1, df2):
 
 def method_selection(case):
     return {
-        config.methodType.tcrdist: tcrdist_method,
-        config.methodType.giana: giana_method,
-        config.methodType.gliph: gliph_method,
+        config.distanceMethodType.tcrdist: tcrdist_method,
+        config.distanceMethodType.giana: giana_method,
+        config.distanceMethodType.gliph: gliph_method,
         'default': tcrdist_method,
     }.get(case, 'default')
 
@@ -119,7 +119,7 @@ def tcr_test():
 
 
 def gliph_test():
-    config.set_method(config.methodType.gliph)
+    config.set_distance_method(config.distanceMethodType.gliph)
     config.set_config(config.speciesType.human, config.chainType.alpha)
     data_alpha = load_data().iloc[:200, :]
     data_alpha = data_alpha.drop('index', axis=1)
@@ -143,7 +143,7 @@ def gliph_test():
 
 def giana_test():
     config.set_config(config.speciesType.human, config.chainType.beta)
-    config.set_method(config.methodType.giana)
+    config.set_distance_method(config.distanceMethodType.giana)
     data = load_data(fineCut=True).iloc[:200, :]
     data = compute_count(data, config.get_columns())
     # We need to rename the count as required by Giana
