@@ -21,15 +21,16 @@ def check_best_k(distance_m):
     plt.ylabel('Inertia')
     plt.title('The elbow method showing the optimal k')
 
-def KMeans_clustering(kvalue, data):
+def KMeans_clustering(data):
     #process
-    return labels
+    return
 
 
 
-def do_clustering(data, method):
-    config.set_clustering_method(mothod)
-    clustering_method = config.clustering
+def do_clustering(data, method = None):
+    if method is not None:
+        config.set_clustering_method(method)
+    clustering_method = config.get_clustering()
     labels = clustering_method(data)
     new_matrix = new_feature_add_matrix(labels, distance_m=)
     return new_matrix

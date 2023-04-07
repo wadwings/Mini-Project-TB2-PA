@@ -28,6 +28,9 @@ class Config:
         gliph = 'gliph'
         giana = 'giana'
 
+    class clusterMethodType:
+        KMeans = 'kmeans'
+
     labelColumns = {
         labelType.none: [],
         labelType.mhc_a: ['mhc.a'],
@@ -133,6 +136,12 @@ class Config:
 
     def get_species_name(self):
         return copy.deepcopy(self.species)
+
+    def clear(self):
+        self.species = self.speciesType.human
+        self.chain = self.chainType.alpha
+        self.label = self.labelType.none
+        self.method = self.methodType.tcrdist
 
 
 config = Config()

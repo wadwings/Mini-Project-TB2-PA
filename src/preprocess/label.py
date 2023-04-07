@@ -23,7 +23,10 @@ def generate_label(data: pd.DataFrame, label: config.labelType = None):
             index += 1
 
     data['label'] = [index_map[labelstr(r)] for i, r in data.iterrows()]
-    return data, index_map
+    reverse_map = {}
+    for key in index_map:
+        reverse_map[index_map[key]] = key
+    return data, reverse_map
     # return pd.DataFrame(filtered_df)
 
 

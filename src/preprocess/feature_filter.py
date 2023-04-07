@@ -15,8 +15,6 @@ def load_data(src='../../data/vdjdb_full.tsv', fineCut=False, label=False, extra
     config.setConfig must be called before load data.
     """
     print("fetching data stage")
-    # df = None
-    # filtered_df = None
     df = pd.read_table(src)
     if row:
         df = df.iloc[:row, :]
