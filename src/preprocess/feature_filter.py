@@ -3,13 +3,14 @@ import pandas as pd
 import numpy as np
 from src.preprocess.label import generate_label
 
+
 #
 # df = pd.read_table().rename(
 #     columns={'cdr3.alpha': 'cdr3_a_aa', "v.alpha": "v_a_gene", "j.alpha": "j_a_gene",
 #              'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'})
 
 
-def load_data(src='../../data/vdjdb_full.tsv', fineCut=False, label=False, extra_columns=[], row=None):
+def load_data(src='../../data/vdjdb_full.tsv', label=False, extra_columns=[], row=None):
     """
     fetch data from vdjDB and filter them based pre-defined config.
     config.setConfig must be called before load data.
@@ -26,12 +27,17 @@ def load_data(src='../../data/vdjdb_full.tsv', fineCut=False, label=False, extra
         .dropna(subset=config.get_columns()).reindex(copy=True)
 
     filtered_df = filtered_df.reset_index(drop=True)
-    if config.label is not config.labelType.none:
-        generate_label(filtered_df)
-        extra_columns.append('label')
-    if fineCut:
-        filtered_df = filtered_df.loc[:, config.get_columns() + extra_columns]
     return pd.DataFrame(filtered_df)
+
+
+def select_columns(df, columns=None):
+    extra_columns = []
+    if config.label is not config.labelType.none:
+        if 'label' not in df.columns:
+            generate_label(df)
+        extra_columns.append('label')
+    df = df.loc[:, columns if columns is not None else config.get_columns() + extra_columns]
+    return df
 
 
 def generate_pid(df):
@@ -61,8 +67,9 @@ def tcr_drop(df, limit_len=8):
 
 
 switch_cdr3 = 1
-def cdr3_3_split(df):
 
+
+def cdr3_3_split(df):
     if switch_cdr3 == 0:
         return df
     else:
@@ -71,6 +78,19 @@ def cdr3_3_split(df):
         return df1
 
 
+def giana_preprocess(df):
+    df = select_columns(df)
+    df = compute_count(df, config.get_columns())
+    # We need to rename the count as required by Giana
+    df = df.rename(columns={'count': 'count..templates.reads.'})
+    df = tcr_drop(df, 8)
+    df = df.reset_index(drop=True)
+    return df
+
+
+def tcr_preprocess(df):
+    df = compute_count(df, config.get_columns())
+    return df
 
 
 if __name__ == '__main__':

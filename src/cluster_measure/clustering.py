@@ -57,6 +57,6 @@ if __name__ == '__main__':
     config.set_config(config.speciesType.human, config.chainType.alpha)
     data = load_data().iloc[:200, :]
     data = compute_count(data, config.get_columns())
-    distance_matrix = compute_distance(data, data)
+    distance_matrix = do_distance_compute(data, data)
 
     append_clustering_result(2, distance_matrix)
