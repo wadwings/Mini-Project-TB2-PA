@@ -28,6 +28,7 @@ class Config:
         gliph = 'gliph'
         giana = 'giana'
 
+
     labelColumns = {
         labelType.none: [],
         labelType.mhc_a: ['mhc.a'],

@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 
+
 def check_best_k(distance_m):
     inertias = []
     K = 10
@@ -20,24 +21,23 @@ def check_best_k(distance_m):
     plt.title('The elbow method showing the optimal k')
 
 
-new_clustring_matrix = None
-def new_feature_add_matrix(k_value, distance_m):
-    global new_clustring_matrix
-    kmeans = KMeans(n_clusters=k_value, random_state=10).fit(distance_m)
+def kmeans_method(k,distance_matrix):
+    kmeans = KMeans(n_clusters=k, random_state=10).fit(distance_matrix)
     plt.figure()
-    plt.scatter(distance_m[:, 0], distance_m[:, 1], c=kmeans.labels_, cmap='rainbow')
+    plt.scatter(distance_matrix[:, 0], distance_matrix[:, 1], c=kmeans.labels_, cmap='rainbow')
+    return kmeans
 
-    # Suppose you already have an eigenmatrix X of the shape (m, n)
-    # Suppose you have used KMeans to cluster X into k categories
 
+def new_feature_add_matrix(label, distance_m):
+    kmeans = label
     labels = kmeans.fit_predict(distance_m)
     # Converts the category to which each sample belongs into a binary vector of length k
     encoder = OneHotEncoder(categories='auto')
     onehot_labels = encoder.fit_transform(labels.reshape(-1, 1)).toarray()
 
     #Add the binary vector as a new feature to the original feature matrix
-    new_clustring_matrix = np.hstack([distance_m, onehot_labels])
-    print(new_clustring_matrix)
+    new_clustering_matrix = np.hstack([distance_m, onehot_labels])
+    return new_clustering_matrix
 
 
 

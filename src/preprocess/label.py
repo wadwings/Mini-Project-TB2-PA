@@ -27,6 +27,11 @@ def generate_label(data: pd.DataFrame, label: config.labelType = None):
     # return pd.DataFrame(filtered_df)
 
 
+#def generate_label_new(data,label):
+
+
+
+
 # if __name__ == '__main__' :
 #     config.set_config(config.speciesType.human, config.chainType.alpha)
 #     # data = load_data()

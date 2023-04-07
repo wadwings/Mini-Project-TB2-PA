@@ -109,13 +109,13 @@ def compute_single_distance(df1: pd.Series, df2: pd.Series):
 
 def tcr_test():
     config.set_config(config.speciesType.human, config.chainType.alpha)
-    data = load_data()
+    data = load_data(fineCut=True).iloc[:200, :]
     data = compute_count(data, config.get_columns())
-    print(data.iloc[:200, :])
-    tr = compute_distance(df1=data.iloc[:200, :], df2=data)
-    print(tr)
-    # print(tr.rw_alpha)
-    # print(tr.rw_alpha.shape)
+    print(data)
+    tr = compute_distance(df1=data, df2=data)
+    print(tr.shape)
+
+
 
 
 def gliph_test():
@@ -137,7 +137,7 @@ def gliph_test():
     data_beta = data_beta.reset_index(drop=True)
     data_beta = data_beta['CDR3b']
     data_beta = cdr3_3_split(data_beta)
-    distance_matrix = compute_distance(data_beta)
+    distance_matrix = compute_distance(data_alpha)
     print(distance_matrix)
 
 
@@ -150,11 +150,11 @@ def giana_test():
     data = data.rename(columns={'count': 'count..templates.reads.'})
     data = tcr_drop(data, 8)
     data = data.reset_index(drop=True)
-    print(data.shape)
+    print(data)
     distance_matrix = compute_distance(data)
     print(distance_matrix)
 
 
 
 if __name__ == "__main__":
-    gliph_test()
+    tcr_test()
