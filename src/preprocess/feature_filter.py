@@ -1,7 +1,7 @@
-from src.preprocess.setup import config
 import pandas as pd
 import numpy as np
-from src.preprocess.label import generate_label
+from .setup import config
+from .label import generate_label
 
 
 #

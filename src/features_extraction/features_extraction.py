@@ -1,8 +1,7 @@
 import copy
 
-from src.preprocess.setup import config
-from src.distance_compute.giana.GIANA4 import giana
-from src.distance_compute.distance_compute import *
+from src.preprocess import *
+from src.distance_compute import *
 import pandas as pd
 import csv
 import os
@@ -11,7 +10,6 @@ import os
 def do_features_extraction(data, method=None):
     features_extraction_method = select_method(method)
     return features_extraction_method(data)
-
 
 def select_method(method=None):
     if method is not None:

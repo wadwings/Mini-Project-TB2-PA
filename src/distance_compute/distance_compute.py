@@ -4,15 +4,15 @@ import pandas as pd
 import numpy as np
 import csv
 
-from src.preprocess.setup import config
-from src.preprocess.feature_filter import *
+from src.preprocess import *
+from .giana.GIANA4 import giana
 from tcrdist.repertoire import TCRrep
-from src.distance_compute.giana.GIANA4 import giana
 from numpy.linalg import norm
-from src.preprocess.feature_filter import cdr3_3_split
 
 
 def tcrdist_method(df1, df2):
+    df1 = tcr_preprocess(df1)
+    df2 = tcr_preprocess(df2)
     tr = TCRrep(cell_df=df1,
                 organism=config.get_species(),
                 chains=config.get_chain(),
@@ -98,6 +98,8 @@ def method_selection(case):
 
 
 def do_distance_compute(df1, df2=None):
+    if df2 is None:
+        df2 = df1
     print("compute distance stage")
     return method_selection(config.distance_method)(df1, df2)
 
@@ -152,4 +154,4 @@ def giana_test():
 
 
 if __name__ == "__main__":
-    tcr_test()
+    giana_test()
