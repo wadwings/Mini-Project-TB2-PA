@@ -368,7 +368,7 @@ sub recursiveSingleLinkage {
 
   # grab this clones connections. If any of them are new, grab their 
   # connections and add them to the pile
-  my @redundant_clones=split(/ /,$$all_connections_per_clone{$seed_clone}); 
+  my @redundant_clones=split(/ /,$$all_connections_per_clone{$seed_clone});
   my %new_unique_clones=();
   for(my $x=0;$x<scalar(@redundant_clones);$x++){
     $new_unique_clones{$redundant_clones[$x]}=1;

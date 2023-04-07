@@ -1,12 +1,13 @@
 import pandas as pd
 
 from src.preprocess.setup import config
-from src.preprocess.feature_filter import load_data
+# from src.preprocess.feature_filter import load_data
 
 
-def generate_label(data: pd.DataFrame, labelType: config.labelType):
+def generate_label(data: pd.DataFrame, label: config.labelType = None):
     print("generating label")
-    config.set_label(labelType)
+    if label:
+        config.set_label(label)
     columns = config.get_label_columns()
     index_map = {}
     index = 0
@@ -22,12 +23,12 @@ def generate_label(data: pd.DataFrame, labelType: config.labelType):
             index += 1
 
     data['label'] = [index_map[labelstr(r)] for i, r in data.iterrows()]
-    return data
+    return data, index_map
     # return pd.DataFrame(filtered_df)
 
 
-if __name__ == '__main__' :
-    config.set_config(config.speciesType.human, config.chainType.alpha)
-    data = load_data()
-    generate_label(data, config.labelType.mhc_a)
-    print(data['label'].unique())
+# if __name__ == '__main__' :
+#     config.set_config(config.speciesType.human, config.chainType.alpha)
+#     # data = load_data()
+#     generate_label(data, config.labelType.mhc_a)
+#     print(data['label'].unique())
