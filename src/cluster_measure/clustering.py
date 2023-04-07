@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
+from src.preprocess.setup import config
+from src.distance_compute.distance_compute import *
 
 def check_best_k(distance_m):
     inertias = []
@@ -19,10 +21,22 @@ def check_best_k(distance_m):
     plt.ylabel('Inertia')
     plt.title('The elbow method showing the optimal k')
 
+def KMeans_clustering(kvalue, data):
+    #process
+    return labels
 
-new_clustring_matrix = None
-def new_feature_add_matrix(k_value, distance_m):
-    global new_clustring_matrix
+
+
+def do_clustering(data, method):
+    config.set_clustering_method(mothod)
+    clustering_method = config.clustering
+    labels = clustering_method(data)
+    new_matrix = new_feature_add_matrix(labels, distance_m=)
+    return new_matrix
+
+
+def new_feature_add_matrix(labels, distance_m):
+
     kmeans = KMeans(n_clusters=k_value, random_state=10).fit(distance_m)
     plt.figure()
     plt.scatter(distance_m[:, 0], distance_m[:, 1], c=kmeans.labels_, cmap='rainbow')
@@ -32,12 +46,21 @@ def new_feature_add_matrix(k_value, distance_m):
 
     labels = kmeans.fit_predict(distance_m)
     # Converts the category to which each sample belongs into a binary vector of length k
-    encoder = OneHotEncoder(categories='auto')
-    onehot_labels = encoder.fit_transform(labels.reshape(-1, 1)).toarray()
-
+    print(f'labels: {labels.shape}')
+    print(f'distance_m: {distance_m.shape}')
     #Add the binary vector as a new feature to the original feature matrix
-    new_clustring_matrix = np.hstack([distance_m, onehot_labels])
-    print(new_clustring_matrix)
+    new_clustering_matrix = distance_m
+    print(new_clustering_matrix)
+    return new_clustering_matrix
+
+
+if __name__ == '__main__':
+    config.set_config(config.speciesType.human, config.chainType.alpha)
+    data = load_data().iloc[:200, :]
+    data = compute_count(data, config.get_columns())
+    distance_matrix = compute_distance(data, data)
+    new_feature_add_matrix(2, distance_matrix)
+
 
 
 
