@@ -83,8 +83,14 @@ if __name__ == '__main__':
     config.set_config(config.speciesType.human, config.chainType.alpha)
     data = load_data().iloc[:200, :]
     data = compute_count(data, config.get_columns())
+<<<<<<< HEAD
     distance_matrix = compute_distance(data, data)
     D = distance_matrix
     dissimilarities = D.max() - D
     similarities = dissimilarities / dissimilarities.max()
     append_clustering_result(similarities)
+=======
+    distance_matrix = do_distance_compute(data, data)
+
+    append_clustering_result(2, distance_matrix)
+>>>>>>> origin/dev-wings

@@ -29,6 +29,11 @@ class Config:
         gliph = 'gliph'
         giana = 'giana'
 
+    class feMethodType:
+        giana_features = 'giana_features'
+        brute_force = 'brute_force'
+        distance_metrics = 'distance_metrics'
+
     class clusterMethodType:
         KMeans = 'kmeans'
 
@@ -92,16 +97,18 @@ class Config:
     chain: chainType.alpha
     label: labelType.none
     distance_method: distanceMethodType.tcrdist
+    fe_method: feMethodType.giana_features
     cluster_method: clusterMethodType.KMeans
     dr_method: drMethodType.pca
 
     def __init__(self, species=speciesType.human, chain=chainType.alpha, label=labelType.none,
-                 distance_method=distanceMethodType.tcrdist, cluster_method=clusterMethodType.KMeans,
-                 dr_method=drMethodType.pca):
+                 distance_method=distanceMethodType.tcrdist, feature_extract_method=feMethodType.giana_features,
+                 cluster_method=clusterMethodType.KMeans, dr_method=drMethodType.pca):
         self.species = species
         self.chain = chain
         self.label = label
         self.distance_method = distance_method
+        self.fe_method = feature_extract_method
         self.cluster_method = cluster_method
         self.dr_method = dr_method
 
@@ -126,6 +133,9 @@ class Config:
                 method == self.distanceMethodType.gliph) and self.chain != self.chainType.beta:
             print(f"{method} cannot be used within self.chain = {self.chain}")
 
+    def set_fe_method(self, method):
+        self.fe_method = method
+
     def set_dr_method(self, method):
         self.dr_method = method
 
@@ -144,6 +154,15 @@ class Config:
     def get_distance_method(self):
         return copy.deepcopy(self.distance_method)
 
+    def get_fe_method(self):
+        return copy.deepcopy(self.fe_method)
+
+    def get_clustering_method(self):
+        return copy.deepcopy(self.cluster_method)
+
+    def get_dr_method(self):
+        return copy.deepcopy(self.dr_method)
+
     def get_columns(self):
         return copy.deepcopy(self.columns[self.chain + self.distance_method])
 
@@ -161,6 +180,7 @@ class Config:
         self.chain = self.chainType.alpha
         self.label = self.labelType.none
         self.distance_method = self.distanceMethodType.tcrdist
+        self.fe_method = self.feMethodType.giana_features
         self.cluster_method = self.clusterMethodType.KMeans
         self.dr_method = self.drMethodType.pca
 

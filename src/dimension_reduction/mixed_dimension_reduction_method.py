@@ -11,6 +11,8 @@ from sklearn.neighbors import KNeighborsClassifier, NeighborhoodComponentsAnalys
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
+
+
 def knn_umap_plot(feature,target):
     n_neighbors = 10
     random_state = 42
