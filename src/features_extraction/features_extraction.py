@@ -46,8 +46,8 @@ def brute_features_extraction(data):
 
 
 def giana_features_extraction(data):
-    data = giana_preprocess(data)
     data.to_csv("./file.tsv", sep='\t', index=False, quoting=csv.QUOTE_NONE)
+    print(data)
     giana({
         'File': './file.tsv',
         'Mat': True,
@@ -66,8 +66,10 @@ def use_distance_as_features(data):
 
 def method_test(method):
     config.set_config(config.speciesType.human, config.chainType.beta)
+    config.set_label(config.labelType.epitope)
     config.set_fe_method(method)
     data = load_data().iloc[:200, :]
+    data = do_preprocess(data)
     return do_features_extraction(data)
 
 
