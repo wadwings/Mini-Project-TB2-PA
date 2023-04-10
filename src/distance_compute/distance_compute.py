@@ -11,8 +11,6 @@ from numpy.linalg import norm
 
 
 def tcrdist_method(df1, df2):
-    df1 = tcr_preprocess(df1)
-    df2 = tcr_preprocess(df2)
     tr = TCRrep(cell_df=df1,
                 organism=config.get_species(),
                 chains=config.get_chain(),
@@ -64,7 +62,6 @@ def gliph_method(df1, df2):
 
 
 def giana_method(df1, df2):
-    df1 = giana_preprocess(df1)
     df1.to_csv("./file.tsv", sep='\t', index=False, quoting=csv.QUOTE_NONE)
     giana({
         'File': './file.tsv',

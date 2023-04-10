@@ -1,3 +1,5 @@
+import copy
+
 import pandas as pd
 
 from src.preprocess.setup import config
@@ -6,6 +8,9 @@ from src.preprocess.setup import config
 
 def generate_label(data: pd.DataFrame, label: config.labelType = None):
     print("generating label")
+    data = copy.deepcopy(data)
+    if 'label' in data:
+        return data
     if label:
         config.set_label(label)
     columns = config.get_label_columns()
@@ -13,7 +18,6 @@ def generate_label(data: pd.DataFrame, label: config.labelType = None):
     index = 0
     labelstr = lambda x: '.'.join(x.to_frame().T[columns].to_numpy()[0])
     # print(labelstr(data.iloc[0, :]))
-
     for _, row in data.iterrows():
         # print(row)
         # print(row.to_frame().T[columns].to_numpy())
@@ -23,6 +27,7 @@ def generate_label(data: pd.DataFrame, label: config.labelType = None):
             index += 1
 
     data['label'] = [index_map[labelstr(r)] for i, r in data.iterrows()]
+    print(index_map)
     reverse_map = {}
     for key in index_map:
         reverse_map[index_map[key]] = key

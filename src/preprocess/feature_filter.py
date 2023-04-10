@@ -1,7 +1,10 @@
+import copy
+
+import pandas
 import pandas as pd
 import numpy as np
-from .setup import config
-from .label import generate_label
+from src.preprocess.label import generate_label
+from src.preprocess.setup import config
 
 
 #
@@ -21,8 +24,6 @@ def load_data(src='../../data/vdjdb_full.tsv', label=False, extra_columns=[], ro
         df = df.iloc[:row, :]
     df = df.rename(columns=config.get_columns_mapping())
 
-    # print(config.get_columns())
-
     filtered_df = df.loc[lambda df: df["species"] == config.get_species_name()] \
         .dropna(subset=config.get_columns()).reindex(copy=True)
 
@@ -34,7 +35,7 @@ def select_columns(df, columns=None):
     extra_columns = []
     if config.label is not config.labelType.none:
         if 'label' not in df.columns:
-            generate_label(df)
+            df, _ = generate_label(df)
         extra_columns.append('label')
     df = df.loc[:, columns if columns is not None else config.get_columns() + extra_columns]
     return df
@@ -56,11 +57,13 @@ def compute_similarity(df):
     return df
 
 
-def compute_count(df, columns: []):
+def compute_count(df: pd.DataFrame, columns: []):
     if config.label is not config.labelType.none:
-        columns.append('label')
-    return pd.DataFrame(df.groupby(columns).size().reset_index().rename(columns={0: 'count'}))
-
+        res = df.groupby(columns).agg({'label': 'first'}).reset_index()
+        res['count'] = df.groupby(columns).size().reset_index().rename(columns={0: 'count'})['count']
+        return res.reset_index(drop=True)
+    else:
+        return pd.DataFrame(df.groupby(columns).size().reset_index().rename(columns={0: 'count'}))
 
 def tcr_drop(df, limit_len=8):
     return df.drop(df[df[config.get_columns()[0]].map(len) < limit_len].index)
@@ -78,11 +81,12 @@ def cdr3_3_split(df):
         return df1
 
 
-def giana_preprocess(df):
+def giana_preprocess(df: pandas.DataFrame):
     df = select_columns(df)
     df = compute_count(df, config.get_columns())
     # We need to rename the count as required by Giana
     df = df.rename(columns={'count': 'count..templates.reads.'})
+    print(df)
     df = tcr_drop(df, 8)
     df = df.reset_index(drop=True)
     return df
@@ -93,8 +97,41 @@ def tcr_preprocess(df):
     return df
 
 
+def select_fe_preprocess_method(method=None):
+    if method is not None:
+        config.set_fe_method(method)
+    return {
+        config.feMethodType.distance_metrics: copy.deepcopy,
+        config.feMethodType.giana_features: giana_preprocess,
+    }.get(config.fe_method, 'default')
+
+
+def select_distance_preprocess_method(method=None):
+    if method is not None:
+        config.set_distance_method(method)
+    return {
+        config.distanceMethodType.tcrdist: tcr_preprocess,
+        config.distanceMethodType.giana: giana_preprocess,
+        'default': tcr_preprocess
+    }.get(config.distance_method, 'default')
+
+
+def do_preprocess(data):
+    preprocess_method = None
+    if config.fe_method == config.feMethodType.distance_metrics:
+        preprocess_method = select_distance_preprocess_method()
+    else:
+        preprocess_method = select_fe_preprocess_method()
+    new_data = preprocess_method(data)
+    return new_data
+
+
 if __name__ == '__main__':
-    config.set_config(config.speciesType.human, config.chainType.pw_ab)
-    data = load_data()
-    data = compute_similarity(data)
-    print(data[config.get_gene_columns()])
+    config.set_config(config.speciesType.human, config.chainType.beta)
+    config.set_label(config.labelType.epitope)
+    config.set_fe_method(config.feMethodType.distance_metrics)
+    config.set_distance_method(config.distanceMethodType.giana)
+    data = pandas.DataFrame(load_data().iloc[:200, :])
+    data = do_preprocess(data)
+    data.to_csv('test.csv')
+    print(data)
