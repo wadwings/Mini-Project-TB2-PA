@@ -113,22 +113,12 @@ def compute_single_distance(df1: pd.Series, df2: pd.Series):
 
 def tcr_test():
     config.set_config(config.speciesType.human, config.chainType.alpha)
-<<<<<<< HEAD
-    data = load_data(fineCut=True).iloc[:200, :]
-    data = compute_count(data, config.get_columns())
-    print(data)
-    tr = compute_distance(df1=data, df2=data)
-    print(tr.shape)
-
-
-=======
     data = load_data().iloc[:200, :]
     data = tcr_preprocess(data)
     tr = do_distance_compute(df1=data, df2=data)
     print(tr)
     # print(tr.rw_alpha)
     # print(tr.rw_alpha.shape)
->>>>>>> origin/dev-wings
 
 
 def gliph_test():
@@ -150,37 +140,18 @@ def gliph_test():
     data_beta = data_beta.reset_index(drop=True)
     data_beta = data_beta['CDR3b']
     data_beta = cdr3_3_split(data_beta)
-<<<<<<< HEAD
-    distance_matrix = compute_distance(data_alpha)
-=======
     distance_matrix = do_distance_compute(data_beta)
->>>>>>> origin/dev-wings
     print(distance_matrix)
 
 
 def giana_test():
     config.set_config(config.speciesType.human, config.chainType.beta)
     config.set_distance_method(config.distanceMethodType.giana)
-<<<<<<< HEAD
-    data = load_data(fineCut=True).iloc[:200, :]
-    data = compute_count(data, config.get_columns())
-    # We need to rename the count as required by Giana
-    data = data.rename(columns={'count': 'count..templates.reads.'})
-    data = tcr_drop(data, 8)
-    data = data.reset_index(drop=True)
-    print(data)
-    distance_matrix = compute_distance(data)
-=======
     data = load_data().iloc[:200, :]
     print(data.shape)
     distance_matrix = do_distance_compute(data)
->>>>>>> origin/dev-wings
     print(distance_matrix)
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    tcr_test()
-=======
     giana_test()
->>>>>>> origin/dev-wings

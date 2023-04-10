@@ -53,7 +53,7 @@ def giana_features_extraction(data):
         'Mat': True,
     })
     feature_matrix = pd.read_table('./file--RotationEncodingBL62.txt_EncodingMatrix.txt', header=None)
-    os.remove('./file.tsv')
+    # os.remove('./file.tsv')
     os.remove('./file--RotationEncodingBL62.txt_EncodingMatrix.txt')
     os.remove('./file--RotationEncodingBL62.txt')
     os.remove('./VgeneScores.txt')
@@ -69,6 +69,7 @@ def method_test(method):
     config.set_fe_method(method)
     data = load_data().iloc[:200, :]
     return do_features_extraction(data)
+
 
 
 if __name__ == '__main__':
