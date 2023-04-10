@@ -82,19 +82,22 @@ def cdr3_3_split(df):
 
 
 def giana_preprocess(df: pandas.DataFrame):
+    df, to_labels = generate_label(df)
     df = select_columns(df)
+
     df = compute_count(df, config.get_columns())
     # We need to rename the count as required by Giana
     df = df.rename(columns={'count': 'count..templates.reads.'})
-    print(df)
-    df = tcr_drop(df, 8)
+    # print(df)
+    df = tcr_drop(df, 10)
     df = df.reset_index(drop=True)
-    return df
+    return df, to_labels
 
 
 def tcr_preprocess(df):
+    df, to_labels = generate_label(df)
     df = compute_count(df, config.get_columns())
-    return df
+    return df, to_labels
 
 
 def select_fe_preprocess_method(method=None):
