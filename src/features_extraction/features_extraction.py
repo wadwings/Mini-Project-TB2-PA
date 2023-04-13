@@ -47,7 +47,6 @@ def brute_features_extraction(data):
 
 def giana_features_extraction(data):
     data.to_csv("./file.tsv", sep='\t', index=False, quoting=csv.QUOTE_NONE)
-    print(data)
     giana({
         'File': './file.tsv',
         'Mat': True,
