@@ -1,9 +1,6 @@
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-
-def plot(data, labels, title, xlabel = 'X', ylabel = 'Y'):
-    plt.scatter(data[:, 0], data[:, 1], c=labels, cmap='viridis')
 def plot(data, labels, title, xlabel='X', ylabel='Y'):
     import matplotlib.pyplot as plt
     import numpy as np
@@ -19,7 +16,7 @@ def plot(data, labels, title, xlabel='X', ylabel='Y'):
     unique_labels = set(labels)
     index = 0
     for label in unique_labels:
-        # generate a random RGB color
+        # generate a random RGB colorc
         color = cmap.colors[index]
         index = index + 1
         # map the label to the color
@@ -44,3 +41,11 @@ def fashion_scatters(x, colors):
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.scatter(x[:, 0], x[:, 1], c=colors, cmap='rainbow')
     return fig, ax
+
+def plot_KNNUMAP(data, labels, title, xlabel='X', ylabel='Y'):
+    plt.scatter(data[:, 0], data[:, 1], c=labels, cmap='Spectral', s=10)
+    plt.gca().set_aspect('equal', 'datalim')
+    plt.colorbar()
+    plt.title('NCA+UMAP', fontsize=24)
+    plt.show()
+
