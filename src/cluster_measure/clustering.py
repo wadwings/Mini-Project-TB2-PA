@@ -58,7 +58,8 @@ def append_clustering_result(labels, distance_m):
     encoder = OneHotEncoder(categories='auto')
     onehot_labels = encoder.fit_transform(labels.reshape(-1, 1)).toarray()
     # Add the binary vector as a new feature to the original feature matrix
-    new_clustering_matrix = np.hstack([distance_m, onehot_labels])
+    new_feature = np.argmax(onehot_labels, axis=1)
+    new_clustering_matrix = np.hstack([distance_m, new_feature])
     # merge matrix here
     return new_clustering_matrix
 
