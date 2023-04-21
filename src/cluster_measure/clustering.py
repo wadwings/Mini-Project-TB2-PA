@@ -23,7 +23,9 @@ def check_best_k(data):
         model.fit(t)
         score = silhouette_score(t, model.labels_,metric='cosine')
         silhouette_scores.append(score)
+
     # 找到最佳的K值
+    print(f'scores: {silhouette_scores}')
     best_k = k_range[silhouette_scores.index(max(silhouette_scores))]
     print(f'Best k value:',best_k)
     print(f'The maximum silhouette coefficient：',max(silhouette_scores))
@@ -40,6 +42,7 @@ def check_best_k_h(data):
         model.fit(t)
         score = silhouette_score(t, model.labels_, metric='cosine')
         silhouette_scores.append(score)
+
     # 找到最佳的K值
     best_k_h = k_range[silhouette_scores.index(max(silhouette_scores))]
     print(f'H The maximum silhouette coefficient：',max(silhouette_scores))
@@ -66,6 +69,7 @@ def check_best_eps(data):
 
 def KMeans_clustering(data):
     k = check_best_k(data)
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto').fit(data)
     kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto').fit(data)
     labels = kmeans.fit_predict(data)
     # process
@@ -138,7 +142,7 @@ if __name__ == '__main__':
     config.set_config(config.speciesType.human, config.chainType.alpha)
     config.set_distance_method(config.distanceMethodType.tcrdist)
     config.set_fe_method(config.feMethodType.distance_metrics)
-    data = load_data('../../data/vdjdb_full.tsv').iloc[:200, :]
+    data = load_data('../../data/vdjdb_full.tsv').iloc[:600, :]
     data, label = do_preprocess(data)
     print(data)
     distance_matrix = do_features_extraction(data)
