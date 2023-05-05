@@ -1,0 +1,4 @@
+##TIME:2023-04-21 15:20:55|cmd: /Users/liuqianyi/opt/anaconda3/envs/Mini-Project-TB2-PA/lib/python3.10/site-packages/ipykernel_launcher.py|./file.tsv|IsometricDistance_Thr=7.0|thr_v=3.7|thr_s=3.6|exact=True|Vgene=True|ST=3
+##Column Info: CDR3 aa sequence, cluster id, other information in the input file
+CASSQGEGVAEQFF	1	TRBV5-1*01	5	1
+CPSSQGDGVAEQFF	1	TRBV5-1*01	5	1

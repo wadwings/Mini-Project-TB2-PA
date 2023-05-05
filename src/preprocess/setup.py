@@ -36,6 +36,10 @@ class Config:
 
     class clusterMethodType:
         KMeans = 'kmeans'
+        Hierarchical = 'Hierarchical'
+        # DBSCAN = 'DBSCAN'
+        pca_add_KMeans = 'pca_add_KMeans'
+        tsne_add_KMeans= 'tsne_add_KMeans'
 
     # dimension_reduction_method_type
     class drMethodType:
