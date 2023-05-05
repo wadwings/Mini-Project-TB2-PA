@@ -9,6 +9,7 @@ def label_topk_not_j(data, k, j=0):
         raise KeyError(f"provided data don't have a 'label' column")
     labels_topk = data['label'].value_counts().head(k).tail(k - j).index.tolist()
     data = data[data['label'].isin(labels_topk)]
+    data.reset_index(inplace=True, drop=True)
     return data
 
 

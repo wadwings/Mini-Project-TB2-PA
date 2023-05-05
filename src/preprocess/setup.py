@@ -28,9 +28,11 @@ class Config:
         tcrdist = 'tcrdist'
         gliph = 'gliph'
         giana = 'giana'
+        tcrpeg = 'tcrpeg'
 
     class feMethodType:
         giana_features = 'giana_features'
+        tcrpeg = 'tcrpeg'
         brute_force = 'brute_force'
         distance_metrics = 'distance_metrics'
 
@@ -72,6 +74,7 @@ class Config:
         distanceMethodType.gliph: {'cdr3.alpha': 'CDR3a', "v.alpha": "TRAV", "j.alpha": "TRAJ",
                                    'cdr3.beta': 'CDR3b', 'v.beta': 'TRBV', 'j.beta': 'TRBJ'},
         distanceMethodType.giana: {'cdr3.beta': 'aminoAcid', 'v.beta': 'vMaxResolved'},
+        distanceMethodType.tcrpeg: {'cdr3.beta': 'aa', 'v.beta': 'v', 'j.beta': 'j'}
     }
 
     columns = {
@@ -85,6 +88,7 @@ class Config:
         chainType.alpha + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
         chainType.beta + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
         chainType.pw_ab + distanceMethodType.giana: ['aminoAcid', 'vMaxResolved'],
+        chainType.beta + distanceMethodType.tcrpeg: ['aa']
     }
 
     gene_columns = {

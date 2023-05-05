@@ -14,13 +14,13 @@ import math
 q = 10000 ## EDIT number of feature vectors per histogram
 p = 3
 howmany = 100 ## EDIT number of histograms per sample
-class_time = "m26" ## EDIT this is what you want output to be called, see out_file variable
+class_time = "-m2-6" ## EDIT this is what you want output to be called, see out_file variable
 
 #EDIT this is the input file of CDR3s to be analysed
 filename = "/home/path/to/files/cdr3_file.txt"
 
 #EDIT this is where output file (containing frequency distributions) should go
-pathout = "/home/path/to/files/"
+pathout = "./"
 code_file = "codewords"
 codewords = np.loadtxt(pathout+code_file+'.txt', delimiter=',')
 outfile = open(pathout+'results'+class_time+'.txt', "w")
