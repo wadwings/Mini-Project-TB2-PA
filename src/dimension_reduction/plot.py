@@ -1,6 +1,8 @@
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 import matplotlib.colors as mcolors
+import seaborn as sns
+import pandas as pd
 import colorsys
 
 
@@ -30,7 +32,7 @@ def plot(data, labels, title, xlabel='X', ylabel='Y'):
     for hls_color in hls_colors:
         h, l, s = hls_color
         for t in range(1, 10):
-            new_h = (h + t/10) % 1.0  # 调整H值以获得新颜色
+            new_h = (h + t / 10) % 1.0  # 调整H值以获得新颜色
             new_hls_color = (new_h, l, s)
             new_hls_colors.append(new_hls_color)
 
@@ -66,6 +68,26 @@ def plot(data, labels, title, xlabel='X', ylabel='Y'):
 
     # 显示图形
     plt.show()
+
+
+def sns_plot(data, labels):
+    test_data = pd.DataFrame()
+    test_data['x'] = data[:, 0]
+    test_data['y'] = data[:, 1]
+    test_data['label'] = labels
+
+    sns.set()
+
+    g = sns.FacetGrid(test_data, hue='label', height=5)
+    g.map(plt.scatter, 'x', 'y', s=50, alpha=.7, edgecolor='white')
+
+    g.add_legend()
+    plt.show()
+
+
+def plot_test(data, labels, title):
+    sns.set()
+    sns.scatterplot(x=data[:, 0], y=data[:, 1], )
 
 
 def fashion_scatters(x, colors):
