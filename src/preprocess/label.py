@@ -3,6 +3,7 @@ import copy
 import pandas as pd
 
 from src.preprocess.setup import config
+from src.preprocess.feature_filter import do_preprocess
 # from src.preprocess.feature_filter import load_data
 
 
@@ -31,7 +32,24 @@ def generate_label(data: pd.DataFrame, label: config.labelType = None):
     for key in index_map:
         reverse_map[index_map[key]] = key
     return data, reverse_map
+
     # return pd.DataFrame(filtered_df)
+
+def select_top_label(data):
+    top_labels = data['label'].value_counts().head(3).index.tolist()
+    print(f'top:',top_labels)
+    data1 = data[data['label'].isin(top_labels)]
+    print(data1)
+
+    # reverse_map = {}
+    # for key in index_map:
+    #     if index_map[key] in top3_labels:
+    #         reverse_map[index_map[key]] = key
+
+    return data1,top_labels
+
+
+
 
 
 #def generate_label_new(data,label):

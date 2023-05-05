@@ -94,3 +94,11 @@ def fashion_scatters(x, colors):
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.scatter(x[:, 0], x[:, 1], c=colors, cmap='rainbow')
     return fig, ax
+
+def plot_KNNUMAP(data, labels, title, xlabel='X', ylabel='Y'):
+    plt.scatter(data[:, 0], data[:, 1], c=labels, cmap='Spectral', s=10)
+    plt.gca().set_aspect('equal', 'datalim')
+    plt.colorbar()
+    plt.title('NCA+UMAP', fontsize=24)
+    plt.show()
+
