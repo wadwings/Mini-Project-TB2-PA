@@ -10,17 +10,19 @@ import math
 
 ###################
 
+
+
 #Input
-q = 10000 ## EDIT number of feature vectors per histogram
+q = 10000
 p = 3
-howmany = 100 ## EDIT number of histograms per sample
-class_time = "m26" ## EDIT this is what you want output to be called, see out_file variable
+howmany = 100
+class_time = "m26"
 
-#EDIT this is the input file of CDR3s to be analysed
-filename = "/home/path/to/files/cdr3_file.txt"
 
-#EDIT this is where output file (containing frequency distributions) should go
-pathout = "/home/path/to/files/"
+filename = "cdr3_file.txt"
+
+
+pathout = "./"
 code_file = "codewords"
 codewords = np.loadtxt(pathout+code_file+'.txt', delimiter=',')
 outfile = open(pathout+'results'+class_time+'.txt', "w")
@@ -50,9 +52,9 @@ def atchley_factor(x):
               [0.260, 0.830, 3.097, 0.838, 1.512]]
     aa = coll.defaultdict(int)
     aa['A'] = 0; aa['C'] = 1; aa['D'] = 2; aa['E'] = 3
-    aa['F'] = 4; aa['G'] = 5;aa['H'] = 6;aa['I'] = 7
-    aa['K'] = 8;aa['L'] = 9;aa['M'] = 10;aa['N'] = 11
-    aa['P'] = 12;aa['Q'] = 13;aa['R'] = 14;aa['S'] = 15
+    aa['F'] = 4; aa['G'] = 5;aa['H'] = 6; aa['I'] = 7
+    aa['K'] = 8;aa['L'] = 9;aa['M'] = 10; aa['N'] = 11
+    aa['P'] = 12;aa['Q'] = 13;aa['R'] = 14; aa['S'] = 15
     aa['T'] = 16;aa['V'] = 17;aa['W'] = 18; aa['Y'] = 19
 
     xsplit = list(x)
@@ -60,7 +62,7 @@ def atchley_factor(x):
 
     for i in range(m):
         for j in range(5):
-            xfactors[5 * i + j] = lookup[aa[xsplit[i]]][j]
+            xfactors[5*i+j] = lookup[aa[xsplit[i]]][j]
 
     return xfactors
 count = 0
@@ -106,5 +108,8 @@ counter += 1
 outfile.close()
 timed = time.time() - t0
 print('Finished in:', timed, 'seconds')
+
+
+
 
 
