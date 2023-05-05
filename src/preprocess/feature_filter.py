@@ -13,22 +13,24 @@ from src.preprocess.setup import config
 #              'cdr3.beta': 'cdr3_b_aa', 'v.beta': 'v_b_gene', 'j.beta': 'j_b_gene'})
 
 
-def load_data(src='../../data/vdjdb_full.tsv', label=False, extra_columns=[], row=None):
+def load_data(src='../../data/vdjdb_full.tsv', label=False, extra_columns=[], row=None, ):
     """
     fetch data from vdjDB and filter them based pre-defined config.
     config.setConfig must be called before load data.
     """
     print("fetching data stage")
-    df = pd.read_table(src)
+    dtypes = {20: str, 29: str, 30: str}
+
+    df = pd.read_table(filepath_or_buffer=src, dtype=dtypes)
     if row:
         df = df.iloc[:row, :]
     df = df.rename(columns=config.get_columns_mapping())
-
+    df = do_drop_badscore(df)
     filtered_df = df.loc[lambda df: df["species"] == config.get_species_name()] \
         .dropna(subset=config.get_columns()).reindex(copy=True)
 
     filtered_df = filtered_df.reset_index(drop=True)
-    return pd.DataFrame(filtered_df)
+    return pd.DataFrame(filtered_df).astype(str)
 
 
 def select_columns(df, columns=None):
@@ -133,6 +135,9 @@ def do_preprocess(data):
     return new_data
 
 
+def do_drop_badscore(data):
+    ret = data[data["vdjdb.score"] != 0]
+    return ret
 
 
 if __name__ == '__main__':
