@@ -15,13 +15,11 @@ import math
 #Input
 q = 10000
 p = 3
-howmany = 100
-class_time = "m26"
+howmany = 100 ## EDIT number of histograms per sample
+class_time = "-m2-6" ## EDIT this is what you want output to be called, see out_file variable
 
 
-filename = "cdr3_file.txt"
-
-
+#EDIT this is where output file (containing frequency distributions) should go
 pathout = "./"
 code_file = "codewords"
 codewords = np.loadtxt(pathout+code_file+'.txt', delimiter=',')

@@ -67,6 +67,7 @@ def compute_count(df: pd.DataFrame, columns: []):
     else:
         return pd.DataFrame(df.groupby(columns).size().reset_index().rename(columns={0: 'count'}))
 
+
 def tcr_drop(df, limit_len=8):
     return df.drop(df[df[config.get_columns()[0]].map(len) < limit_len].index)
 
@@ -106,10 +107,20 @@ def tcr_preprocess(df):
 
 
 
+def tcrpeg_preprocess(df):
+    df, label = generate_label(df)
+    ret = pd.DataFrame()
+    ret['aa'] = df['aa']
+    ret['v'] = df['v']
+    ret['j'] = df['j']
+    ret['label'] = df['label']
+    return ret, label
+
 def select_fe_preprocess_method(method=None):
     if method is not None:
         config.set_fe_method(method)
     return {
+        config.feMethodType.tcrpeg: tcrpeg_preprocess,
         config.feMethodType.distance_metrics: copy.deepcopy,
         config.feMethodType.giana_features: giana_preprocess,
     }.get(config.fe_method, 'default')

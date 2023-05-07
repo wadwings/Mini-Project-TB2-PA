@@ -1,3 +1,11 @@
 [submodule "src/distance_compute/giana"]
 	path = src/distance_compute/giana
 	url = https://github.com/wadwings/GIANA
+[submodule "./src/TCRpeg"]
+	url = https://github.com/wadwings/TCRpeg
+[submodule "TCRpeg"]
+	path = TCRpeg
+	url = https://github.com/jiangdada1221/TCRpeg.git
+[submodule "src/TCRpeg"]
+	path = src/TCRpeg
+	url = https://github.com/jiangdada1221/TCRpeg.git

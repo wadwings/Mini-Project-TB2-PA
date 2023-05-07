@@ -74,6 +74,6 @@ def knn_umap_method(feature,target):
 
 
 def mds_method(features):
-    mds = MDS(n_components=2, random_state=42)
+    mds = MDS(n_components=2, random_state=42, dissimilarity='precomputed', normalized_stress='auto')
     embedding = mds.fit_transform(features)
     return embedding

@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
 import seaborn as sns
 from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage,fcluster
+import numpy as np
+from sklearn import metrics
 
 # def check_best_pca_n(data):
 #     pca = PCA()
@@ -21,51 +24,66 @@ from sklearn.cluster import AgglomerativeClustering
 #     return num_components
 
 # Find best k for keams
-def check_best_k(data):
-    k_range = range(2, 11)
-    silhouette_scores = []
-    for k in k_range:
-        t = data
-        model = KMeans(n_clusters=k, random_state=42, n_init='auto')
-        model.fit(t)
-        score = silhouette_score(t, model.labels_,metric='cosine')
-        silhouette_scores.append(score)
-
-    print(f'scores: {silhouette_scores}')
-    best_k = k_range[silhouette_scores.index(max(silhouette_scores))]
-    print(f'Best k value:',best_k)
-    print(f'The maximum silhouette coefficient：',max(silhouette_scores))
-    return best_k
+# def check_best_k(data):
+#     k_range = range(2, 11)
+#     silhouette_scores = []
+#     for k in k_range:
+#         t = data
+#         model = KMeans(n_clusters=k, random_state=42, n_init='auto')
+#         model.fit(t)
+#         score = silhouette_score(t, model.labels_,metric='cosine')
+#         silhouette_scores.append(score)
+#
+#     print(f'scores: {silhouette_scores}')
+#     best_k = k_range[silhouette_scores.index(max(silhouette_scores))]
+#     print(f'Best k value:',best_k)
+#     print(f'The maximum silhouette coefficient：',max(silhouette_scores))
+#     return best_k
 
 # Find best k for Hierarchical
-def check_best_k_h(data):
-    k_range = range(2, 11)
-    silhouette_scores = []
-    print(data)
-    for k in k_range:
-        t = data
-        model = AgglomerativeClustering(n_clusters=k, linkage='ward')
-        model.fit(t)
-        score = silhouette_score(t, model.labels_, metric='cosine')
-        silhouette_scores.append(score)
+# def check_best_k_h(data):
+#     k_range = range(2, 11)
+#     silhouette_scores = []
+#     print(data)
+#     for k in k_range:
+#         t = data
+#         model = AgglomerativeClustering(n_clusters=k, linkage='ward')
+#         model.fit(t)
+#         score = silhouette_score(t, model.labels_, metric='cosine')
+#         silhouette_scores.append(score)
+#
+#     best_k_h = k_range[silhouette_scores.index(max(silhouette_scores))]
+#     print(f'H The maximum silhouette coefficient：',max(silhouette_scores))
+#     return best_k_h
 
-    best_k_h = k_range[silhouette_scores.index(max(silhouette_scores))]
-    print(f'H The maximum silhouette coefficient：',max(silhouette_scores))
-    return best_k_h
+
+def purity_score(ytrue, ypred):
+    from sklearn.metrics.cluster import contingency_matrix
+    # compute contingency matrix (also called confusion matrix)
+    contingency_matrix = metrics.cluster.contingency_matrix(ytrue, ypred)
+    # return purity
+    return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix)
+
+
 
 # 4 Clustering Method
-def KMeans_clustering(data):
-    k = check_best_k(data)
-    kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto').fit(data)
-    labels = kmeans.labels_
+def KMeans_clustering(data,truelabel):
+    kmeans = KMeans(n_clusters=10, random_state=42, n_init='auto').fit(feature_matrix)
+    labels = kmeans.fit_predict(feature_matrix)
+    purity_kmeans = purity_score(truelabel, labels)
+    print("purity kMeans:",purity_kmeans)
     # process
     return labels
 
-def Hierarchical_clustering(data):
-    k = check_best_k_h(data)
-    model = AgglomerativeClustering(n_clusters=k, linkage='ward')
-    model.fit(data)
-    return model.labels_
+def Hierarchical_clustering(data,truelabel):
+    # k = check_best_k_h(data)
+    model = AgglomerativeClustering(n_clusters=10, linkage='average')
+    labels = model.fit_predict(feature_matrix)
+    purity_hierarchical = purity_score(truelabel, labels)
+    print("purity Hierarchical:", purity_hierarchical)
+    return labels
+
+
 
 def PCA_Kmeans_improve_clustering(data):
     pca_apply_kmeans = pca_method(data)
@@ -91,6 +109,22 @@ def tsne_Kmeans_improve_clustering(data):
 #     # print('labels:', labels)
 #     # new_matrix = append_clustering_result(labels, distance_m=data)
 #     # return new_matrix
+
+def linked_plot(data):
+    # linked = linkage(feature_matrix, 'single')
+    # labelList = range(len(feature_matrix))
+    # plt.figure()
+    # dendrogram(linked, labels=labelList)
+    # plt.show()
+    fig, axs = plt.subplots(2, 2, figsize=(15, 15))
+    metrics = ['single', 'average', 'complete', 'centroid']
+    for i in range(2):
+        for j in range(2):
+            linked = linkage(data, metrics[(i * 2) + j])
+            dendrogram(linked, ax=axs[i, j])
+            axs[i, j].set_title(metrics[(i * 2) + j])
+
+
 
 # Two plot method
 def basic_clustering_plot(data,method=None):
@@ -132,8 +166,6 @@ def KMeans_improve_plot(data,method=None):
     plt.show()
 
 
-
-
 def select_basic_method(method=None):
     if method is None:
         method = config.cluster_method
@@ -160,18 +192,23 @@ def select_improve_method(method=None):
 
 if __name__ == '__main__':
     config.set_config(config.speciesType.human, config.chainType.beta)
-    config.set_distance_method(config.distanceMethodType.tcrdist)
+    config.set_label(config.labelType.epitope)
     config.set_fe_method(config.feMethodType.distance_metrics)
-    config.set_label(config.labelType.species)
+    config.set_distance_method(config.distanceMethodType.tcrdist)
 
-    data = load_data()
-    data, index_map = do_preprocess(data)
-    data, top_label = select_top_label(data)
-    data = data.iloc[:2000, :]
-    top_label = pandas.DataFrame(top_label).iloc[:2000, :]
+    data = load_data("../../data/vdjdb_full.tsv")
+    data, label = do_preprocess(data)
+    data = do_segmentation(data, 10)
     feature_matrix = do_features_extraction(data)
-    basic_clustering_plot(feature_matrix, method='Hierarchical')
-    KMeans_improve_plot(feature_matrix, method='tsne_add_KMeans')
+
+    KMeans_clustering(feature_matrix,data['label'])
+    Hierarchical_clustering(feature_matrix,data['label'])
+    linked_plot(feature_matrix)
+
+    # print("Kmeans==========================================================================>")
+    # basic_clustering_plot(feature_matrix, method='kmeans')
+    # print("PCA + Kmeans==========================================================================>")
+    # KMeans_improve_plot(feature_matrix, method='pca_add_KMeans')
 
 
 
