@@ -4,12 +4,11 @@ import pandas as pd
 import numpy as np
 import csv
 
-from src.preprocess.setup import config
-from src.preprocess.feature_filter import load_data, compute_count, tcr_drop
+from src.preprocess import *
+from .giana.GIANA4 import giana
 from tcrdist.repertoire import TCRrep
-from src.distance_compute.giana.GIANA4 import giana
 from numpy.linalg import norm
-from src.preprocess.feature_filter import cdr3_3_split
+
 
 def tcrdist_method(df1, df2):
     tr = TCRrep(cell_df=df1,
@@ -62,8 +61,6 @@ def gliph_method(df1, df2):
     return distance_matrix
 
 
-
-
 def giana_method(df1, df2):
     df1.to_csv("./file.tsv", sep='\t', index=False, quoting=csv.QUOTE_NONE)
     giana({
@@ -87,39 +84,42 @@ def giana_method(df1, df2):
     os.remove('./VgeneScores.txt')
     return distance_matrix
 
+
 def method_selection(case):
     return {
-        config.methodType.tcrdist: tcrdist_method,
-        config.methodType.giana: giana_method,
-        config.methodType.gliph: gliph_method,
+        config.distanceMethodType.tcrdist: tcrdist_method,
+        config.distanceMethodType.giana: giana_method,
+        config.distanceMethodType.gliph: gliph_method,
         'default': tcrdist_method,
     }.get(case, 'default')
 
 
-def compute_distance(df1, df2=None):
+def do_distance_compute(df1, df2=None):
+    if df2 is None:
+        df2 = df1
     print("compute distance stage")
-    return method_selection(config.method)(df1, df2)
+    return method_selection(config.distance_method)(df1, df2)
+
 
 def compute_single_distance(df1: pd.Series, df2: pd.Series):
     df1 = df1.to_frame().T
     df2 = df2.to_frame().T
-    tr = compute_distance(df1, df2)
+    tr = do_distance_compute(df1, df2)
     return tr
 
 
 def tcr_test():
     config.set_config(config.speciesType.human, config.chainType.alpha)
-    data = load_data()
-    data = compute_count(data, config.get_columns())
-    print(data.iloc[:200, :])
-    tr = compute_distance(df1=data.iloc[:200, :], df2=data)
+    data = load_data().iloc[:200, :]
+    data = tcr_preprocess(data)
+    tr = do_distance_compute(df1=data, df2=data)
     print(tr)
     # print(tr.rw_alpha)
     # print(tr.rw_alpha.shape)
 
 
 def gliph_test():
-    config.set_method(config.methodType.gliph)
+    config.set_distance_method(config.distanceMethodType.gliph)
     config.set_config(config.speciesType.human, config.chainType.alpha)
     data_alpha = load_data().iloc[:200, :]
     data_alpha = data_alpha.drop('index', axis=1)
@@ -137,24 +137,18 @@ def gliph_test():
     data_beta = data_beta.reset_index(drop=True)
     data_beta = data_beta['CDR3b']
     data_beta = cdr3_3_split(data_beta)
-    distance_matrix = compute_distance(data_beta)
+    distance_matrix = do_distance_compute(data_beta)
     print(distance_matrix)
 
 
 def giana_test():
     config.set_config(config.speciesType.human, config.chainType.beta)
-    config.set_method(config.methodType.giana)
-    data = load_data(fineCut=True).iloc[:200, :]
-    data = compute_count(data, config.get_columns())
-    # We need to rename the count as required by Giana
-    data = data.rename(columns={'count': 'count..templates.reads.'})
-    data = tcr_drop(data, 8)
-    data = data.reset_index(drop=True)
+    config.set_distance_method(config.distanceMethodType.giana)
+    data = load_data().iloc[:200, :]
     print(data.shape)
-    distance_matrix = compute_distance(data)
+    distance_matrix = do_distance_compute(data)
     print(distance_matrix)
 
 
-
 if __name__ == "__main__":
-    gliph_test()
+    giana_test()

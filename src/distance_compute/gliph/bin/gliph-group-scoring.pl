@@ -70,7 +70,7 @@ for(my $c=0;$c<scalar(@convergence_groups);$c++){
   # if this convergence group is size 3 or larger
 
 
-  if($count>1){
+  if($count>0){
     print "\n\nEvaluating $name ($count members: $cdr3_list)\n";
 
     # get all the patients
